@@ -205,6 +205,7 @@ func newSingBoxInstanceWithRoutingPathsContext(
 		nekoboxAndroidCertificateProviderRegistry(),
 	)
 	ctx = service.ContextWithDefaultRegistry(ctx)
+	ctx = pause.WithDefaultManager(ctx)
 	if client := currentTProxyClient(); client != nil {
 		service.MustRegister[adapter.TProxySocketFactory](ctx, &tproxySocketFactory{client: *client})
 	}
