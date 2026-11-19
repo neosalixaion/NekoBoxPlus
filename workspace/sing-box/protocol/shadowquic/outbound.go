@@ -80,7 +80,13 @@ func NewOutbound(ctx context.Context, router adapter.Router, logger log.ContextL
 			h.idleAccess.Lock()
 			h.paused = pauseManager.IsPaused()
 			h.applyKeepIdleLocked()
+			paused := h.paused
 			h.idleAccess.Unlock()
+			if paused {
+				// Do not carry a potentially stale QUIC session through Android Doze
+				// or a network outage. The next dial after wake creates a fresh one.
+				_ = h.client.Close()
+			}
 		})
 		h.unregisterPauseCallback = func() {
 			pauseManager.UnregisterCallback(callback)
