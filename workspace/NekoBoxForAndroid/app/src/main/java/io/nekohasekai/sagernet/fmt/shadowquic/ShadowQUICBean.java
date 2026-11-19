@@ -93,7 +93,7 @@ public class ShadowQUICBean extends AbstractBean {
         return buildTypedHash("shadowquic");
     }
 
-    public static final Creator<ShadowQUICBean> CREATOR = new Creator<ShadowQUICBean>() {
+    public static final Creator<ShadowQUICBean> CREATOR = new CREATOR<ShadowQUICBean>() {
         @NonNull @Override public ShadowQUICBean newInstance() { return new ShadowQUICBean(); }
         @Override public ShadowQUICBean[] newArray(int size) { return new ShadowQUICBean[size]; }
     };
