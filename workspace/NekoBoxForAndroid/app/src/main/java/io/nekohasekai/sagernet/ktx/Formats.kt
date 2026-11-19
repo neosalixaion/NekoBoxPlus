@@ -26,6 +26,7 @@ import io.nekohasekai.sagernet.fmt.socks.parseSOCKS
 import io.nekohasekai.sagernet.fmt.trojan.parseTrojan
 import io.nekohasekai.sagernet.fmt.trusttunnel.parseTrustTunnel
 import io.nekohasekai.sagernet.fmt.tuic.parseTuic
+import io.nekohasekai.sagernet.fmt.shadowquic.parseShadowQUIC
 import io.nekohasekai.sagernet.fmt.juicity.parseJuicity
 import io.nekohasekai.sagernet.fmt.trojan_go.parseTrojanGo
 import io.nekohasekai.sagernet.fmt.v2ray.parseV2Ray
@@ -303,6 +304,13 @@ suspend fun parseProxies(text: String): List<AbstractBean> {
             Logs.d("Try parse TUIC link: $this")
             runCatching {
                 entities.add(parseTuic(this))
+            }.onFailure {
+                Logs.w(it)
+            }
+        } else if (startsWith("sq://", ignoreCase = true)) {
+            Logs.d("Try parse ShadowQUIC link: $this")
+            runCatching {
+                entities.add(parseShadowQUIC(this))
             }.onFailure {
                 Logs.w(it)
             }
