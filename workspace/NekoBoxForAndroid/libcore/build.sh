@@ -21,6 +21,7 @@ if ! go run -tags=with_gvisor ../../sing-box/cmd/internal/gvisor_workaround_veri
 fi
 
 # Keep the gomobile main module graph in sync with local sing-box dependencies.
+# Run this from libcore/ so newly imported outbound dependencies are recorded here.
 # ShadowQUIC adds transitive QUIC/TLS modules that must be recorded by libcore.
 echo ">> tidy Go module graph"
 go mod tidy || exit 1
