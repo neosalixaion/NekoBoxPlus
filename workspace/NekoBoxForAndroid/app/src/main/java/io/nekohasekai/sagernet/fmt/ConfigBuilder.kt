@@ -806,6 +806,10 @@ fun buildConfig(
                                     buildSingBoxOutboundShadowQUICBean(bean)
                                 }
 
+                                is ShadowQUICBean -> {
+                                    buildSingBoxOutboundShadowQUICBean(bean)
+                                }
+
                                 is JuicityBean -> {
                                     buildSingBoxOutboundJuicityBean(bean)
                                 }
