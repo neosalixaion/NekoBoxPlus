@@ -45,9 +45,9 @@ tasks.named("preBuild").configure {
 android {
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-    ndk {
-        abiFilters += "arm64-v8a"
+        ndk {
+            abiFilters += "arm64-v8a"
+        }
     }
     lint {
         baseline = file("lint-baseline.xml")
