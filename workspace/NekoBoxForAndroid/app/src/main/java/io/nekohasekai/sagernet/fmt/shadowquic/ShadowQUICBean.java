@@ -31,7 +31,7 @@ public class ShadowQUICBean extends AbstractBean {
     @Override
     public void serialize(ByteBufferOutput output) {
         super.serialize(output);
-        output.writeInt(1);
+        output.writeInt(4);
         output.writeString(username);
         output.writeString(password);
         output.writeString(sni);
@@ -50,8 +50,30 @@ public class ShadowQUICBean extends AbstractBean {
         sni = input.readString();
         alpn = input.readString();
         congestionControl = input.readString();
+        if (version <= 3 && "new-reno".equals(congestionControl)) {
+            congestionControl = "new_reno";
+        }
+        if (version <= 3 && "brutal".equals(congestionControl)) {
+            congestionControl = "bbr";
+        }
         zeroRTT = input.readBoolean();
         udpOverStream = input.readBoolean();
+        if (version >= 1 && version <= 3) {
+            boolean disableALPN = input.readBoolean();
+            if (disableALPN) {
+                alpn = "";
+            }
+            if (!disableALPN && alpn.isEmpty()) {
+                alpn = "h3";
+            }
+            input.readBoolean(); // legacy useSunnyQUIC
+        }
+        if (version >= 2 && version <= 3) {
+            input.readString(); // legacy certificate
+        }
+        if (version == 3) {
+            input.readLong(); // legacy brutal upload bandwidth
+        }
     }
 
     @NonNull
