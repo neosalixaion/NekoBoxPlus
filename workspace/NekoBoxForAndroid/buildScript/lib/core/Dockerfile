@@ -26,7 +26,7 @@ RUN set -eux; \
       arm64) go_arch=arm64 ;; \
       *) echo "Unsupported Docker TARGETARCH=${TARGETARCH}" >&2; exit 1 ;; \
     esac; \
-    curl -fsSL "https://go.dev/dl/go${BOOTSTRAP_GO_VERSION}.linux-${go_arch}.tar.gz" -o /tmp/go-bootstrap.tar.gz; \
+    curl -fsSL "https://storage.googleapis.com/golang/go${BOOTSTRAP_GO_VERSION}.linux-${go_arch}.tar.gz" -o /tmp/go-bootstrap.tar.gz; \
     mkdir -p /usr/local; \
     tar -C /usr/local -xzf /tmp/go-bootstrap.tar.gz; \
     mv /usr/local/go /usr/local/go-bootstrap; \
@@ -36,7 +36,7 @@ WORKDIR /tmp/go-src
 COPY ${GO_PATCH_DIR} /tmp/go-runtime-patches
 
 RUN set -eux; \
-    curl -fsSL "https://go.dev/dl/go${GO_VERSION}.src.tar.gz" -o /tmp/go-src.tar.gz; \
+    curl -fsSL "https://storage.googleapis.com/golang/go${GO_VERSION}.src.tar.gz" -o /tmp/go-src.tar.gz; \
     tar -C /tmp/go-src --strip-components=1 -xzf /tmp/go-src.tar.gz; \
     for patch_file in /tmp/go-runtime-patches/*.patch; do \
       echo "Applying ${patch_file}"; \
