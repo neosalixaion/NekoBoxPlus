@@ -109,6 +109,7 @@ func OutboundRegistry() *outbound.Registry {
 	mieru.RegisterOutbound(registry)
 	anytls.RegisterOutbound(registry)
 	masque.RegisterOutbound(registry)
+	shadowquic.RegisterOutbound(registry)
 
 	registerQUICOutbounds(registry)
 	registerStubForRemovedOutbounds(registry)
