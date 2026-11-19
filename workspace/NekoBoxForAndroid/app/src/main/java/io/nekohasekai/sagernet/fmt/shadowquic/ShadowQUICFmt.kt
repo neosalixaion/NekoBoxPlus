@@ -1,6 +1,5 @@
 package io.nekohasekai.sagernet.fmt.shadowquic
 
-import io.nekohasekai.sagernet.fmt.subscriptionBoolean
 import io.nekohasekai.sagernet.ktx.linkBuilder
 import io.nekohasekai.sagernet.ktx.toLink
 import moe.matsuri.nb4a.SingBoxOptions
@@ -26,7 +25,7 @@ fun parseShadowQUIC(url: String): ShadowQUICBean {
             "stream" -> true
             else -> true
         }
-        zeroRTT = link.queryParameter("zero_rtt")?.subscriptionBoolean() ?: false
+        zeroRTT = link.queryParameter("zero_rtt") != null
     }
 }
 
