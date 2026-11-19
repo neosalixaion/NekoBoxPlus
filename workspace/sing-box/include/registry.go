@@ -32,7 +32,7 @@ import (
 	"github.com/sagernet/sing-box/protocol/naive"
 	"github.com/sagernet/sing-box/protocol/redirect"
 	"github.com/sagernet/sing-box/protocol/shadowsocks"
-	"github.com/sagernet/sing-box/protocol/shadowsocksr"
+	"github.com/sagernet/sing-box/protocol/shadowsocksr"\n\t"github.com/sagernet/sing-box/protocol/shadowquic"
 	"github.com/sagernet/sing-box/protocol/shadowtls"
 	snell "github.com/sagernet/sing-box/protocol/snell"
 	"github.com/sagernet/sing-box/protocol/socks"
