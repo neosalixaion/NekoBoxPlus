@@ -28,7 +28,7 @@ internal fun ShadowQUICProfileSettingsScreen() {
     val nameTitle = stringResource(R.string.profile_name)
     val addressTitle = stringResource(R.string.server_address)
     val portTitle = stringResource(R.string.server_port)
-    val usernameTitle = stringResource(R.string.uuid)
+    val usernameTitle = stringResource(R.string.username)
     val passwordTitle = stringResource(R.string.password)
     val sniTitle = stringResource(R.string.sni)
     val alpnTitle = stringResource(R.string.alpn)
@@ -65,7 +65,7 @@ internal fun ShadowQUICProfileSettingsScreen() {
         item { ProfileActionRow(R.drawable.ic_maps_directions_boat, R.string.server_port, summary(port)) {
             edit(portTitle, port, KeyboardType.Number, 5) { port = it; DataStore.serverPort = it.toIntOrNull() ?: 443 }
         } }
-        item { ProfileActionRow(R.drawable.ic_baseline_person_24, R.string.uuid, summary(username)) {
+        item { ProfileActionRow(R.drawable.ic_baseline_person_24, R.string.username, summary(username)) {
             edit(usernameTitle, username) { username = it; DataStore.serverUsername = it }
         } }
         item { ProfileActionRow(R.drawable.ic_settings_password, R.string.password,
