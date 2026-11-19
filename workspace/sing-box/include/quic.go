@@ -12,7 +12,6 @@ import (
 	"github.com/sagernet/sing-box/protocol/hysteria2"
 	_ "github.com/sagernet/sing-box/protocol/naive/quic"
 	"github.com/sagernet/sing-box/protocol/tuic"
-	"github.com/sagernet/sing-box/protocol/shadowquic"
 	_ "github.com/sagernet/sing-box/transport/v2rayquic"
 )
 
@@ -25,7 +24,6 @@ func registerQUICInbounds(registry *inbound.Registry) {
 func registerQUICOutbounds(registry *outbound.Registry) {
 	hysteria.RegisterOutbound(registry)
 	tuic.RegisterOutbound(registry)
-	shadowquic.RegisterOutbound(registry)
 	hysteria2.RegisterOutbound(registry)
 }
 
