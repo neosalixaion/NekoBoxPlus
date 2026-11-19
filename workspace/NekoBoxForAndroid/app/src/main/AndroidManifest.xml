@@ -216,6 +216,7 @@
                 <data android:scheme="hysteria2" />
                 <data android:scheme="hy2" />
                 <data android:scheme="tuic" />
+                <data android:scheme="sq" />
                 <data android:scheme="juicity" />
                 <data android:scheme="mierus" />
                 <data android:scheme="tt" />
@@ -545,6 +546,9 @@
             android:configChanges="uiMode" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.profile.TuicSettingsActivity"
+            android:configChanges="uiMode" />
+        <activity
+            android:name="io.nekohasekai.sagernet.ui.profile.ShadowQUICSettingsActivity"
             android:configChanges="uiMode" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.profile.JuicitySettingsActivity"
