@@ -32,6 +32,8 @@ internal fun ShadowQUICProfileSettingsScreen() {
     val passwordTitle = stringResource(R.string.password)
     val sniTitle = stringResource(R.string.sni)
     val alpnTitle = stringResource(R.string.alpn)
+    val congestionTitle = stringResource(R.string.tuic_congestion_controller)
+    val udpTitle = stringResource(R.string.shadowquic_udp_mode)
     var name by remember { mutableStateOf(DataStore.profileName) }
     var address by remember { mutableStateOf(DataStore.serverAddress) }
     var port by remember { mutableStateOf(DataStore.serverPort.toString()) }
@@ -82,7 +84,7 @@ internal fun ShadowQUICProfileSettingsScreen() {
             val selected = congestionValues.indexOf(congestion).coerceAtLeast(0)
             ProfileActionRow(R.drawable.ic_baseline_compare_arrows_24,
                 R.string.tuic_congestion_controller, congestionLabels[selected]) {
-                choose(stringResource(R.string.tuic_congestion_controller), congestionLabels, selected) {
+                choose(congestionTitle, congestionLabels, selected) {
                     congestion = congestionValues[it]; DataStore.serverCongestionController = congestion
                 }
             }
@@ -91,7 +93,7 @@ internal fun ShadowQUICProfileSettingsScreen() {
             val selected = udpValues.indexOf(udpMode).coerceAtLeast(0)
             ProfileActionRow(R.drawable.ic_baseline_add_road_24,
                 R.string.shadowquic_udp_mode, udpLabels[selected]) {
-                choose(stringResource(R.string.shadowquic_udp_mode), udpLabels, selected) {
+                choose(udpTitle, udpLabels, selected) {
                     udpMode = udpValues[it]; DataStore.serverUDPRelayMode = udpMode
                 }
             }
