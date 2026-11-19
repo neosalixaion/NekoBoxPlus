@@ -1449,6 +1449,15 @@
         <item>bbr</item>
     </string-array>
 
+    <string-array name="shadowquic_udp_mode_entry">
+        <item>QUIC datagrams</item>
+        <item>QUIC streams (UDP over stream)</item>
+    </string-array>
+    <string-array name="shadowquic_udp_mode_value" translatable="false">
+        <item>datagram</item>
+        <item>stream</item>
+    </string-array>
+
     <string-array name="trusttunnel_quic_congestion_controller_entry" translatable="false">
         <item></item>
         <item>bbr</item>

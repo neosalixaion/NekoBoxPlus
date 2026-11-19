@@ -1073,10 +1073,12 @@
     <string name="rules_geosite_url">geosite URL</string>
     <string name="rules_geoip_url">geoip URL</string>
 
+    <string name="action_shadowquic">ShadowQUIC</string>
     <string name="tuic_udp_relay_mode">UDP Relay Mode</string>
     <string name="tuic_congestion_controller">Congestion Controller</string>
     <string name="tuic_disable_sni">Disable SNI</string>
     <string name="tuic_reduce_rtt">Enable 0-RTT QUIC handshake</string>
+    <string name="shadowquic_udp_mode">UDP transport mode</string>
 
     <string name="pinned_certchain_sha256">Pinned Certificate SHA256</string>
 

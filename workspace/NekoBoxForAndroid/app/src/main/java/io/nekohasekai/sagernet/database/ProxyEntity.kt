@@ -40,6 +40,8 @@ import io.nekohasekai.sagernet.fmt.trojan_go.toUri
 import io.nekohasekai.sagernet.fmt.trusttunnel.TrustTunnelBean
 import io.nekohasekai.sagernet.fmt.trusttunnel.toUri
 import io.nekohasekai.sagernet.fmt.tuic.TuicBean
+import io.nekohasekai.sagernet.fmt.shadowquic.ShadowQUICBean
+import io.nekohasekai.sagernet.fmt.shadowquic.toUri as shadowQUICToUri
 import io.nekohasekai.sagernet.fmt.tuic.toUri
 import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
 import io.nekohasekai.sagernet.fmt.juicity.toUri
@@ -93,6 +95,7 @@ data class ProxyEntity(
     var naiveBean: NaiveBean? = null,
     var hysteriaBean: HysteriaBean? = null,
     var tuicBean: TuicBean? = null,
+    var shadowQUICBean: ShadowQUICBean? = null,
     var juicityBean: JuicityBean? = null,
     var snellBean: SnellBean? = null,
     var masterDnsVPNBean: MasterDnsVPNBean? = null,
@@ -140,6 +143,7 @@ data class ProxyEntity(
         const val TYPE_BYEDPI = 28
         const val TYPE_TRUST_TUNNEL = 29
         const val TYPE_MASQUE = 30
+        const val TYPE_SHADOWQUIC = 35
         const val TYPE_DIRECT = 31
         const val TYPE_TAILSCALE = 32
         const val TYPE_OPENVPN = 33
@@ -234,6 +238,7 @@ data class ProxyEntity(
             TYPE_WG -> wgBean = KryoConverters.wireguardDeserialize(byteArray)
             TYPE_AWG -> awgBean = KryoConverters.amneziaWGDeserialize(byteArray)
             TYPE_TUIC -> tuicBean = KryoConverters.tuicDeserialize(byteArray)
+            TYPE_SHADOWQUIC -> shadowQUICBean = KryoConverters.shadowQUICDeserialize(byteArray)
             TYPE_JUICITY -> juicityBean = KryoConverters.juicityDeserialize(byteArray)
             TYPE_SNELL -> snellBean = KryoConverters.snellDeserialize(byteArray)
             TYPE_MASTERDNSVPN -> masterDnsVPNBean = KryoConverters.masterDnsVPNDeserialize(byteArray)
@@ -268,6 +273,7 @@ data class ProxyEntity(
         TYPE_WG -> "WireGuard"
         TYPE_AWG -> "AmneziaWG"
         TYPE_TUIC -> "TUIC"
+        TYPE_SHADOWQUIC -> "ShadowQUIC"
         TYPE_JUICITY -> "Juicity"
         TYPE_SNELL -> "Snell"
         TYPE_MASTERDNSVPN -> "MasterDnsVPN"
@@ -306,6 +312,7 @@ data class ProxyEntity(
             TYPE_WG -> wgBean
             TYPE_AWG -> awgBean
             TYPE_TUIC -> tuicBean
+            TYPE_SHADOWQUIC -> shadowQUICBean
             TYPE_JUICITY -> juicityBean
             TYPE_SNELL -> snellBean
             TYPE_MASTERDNSVPN -> masterDnsVPNBean
@@ -366,6 +373,7 @@ data class ProxyEntity(
             is NaiveBean -> toUri()
             is HysteriaBean -> toUri()
             is TuicBean -> toUri()
+            is ShadowQUICBean -> shadowQUICToUri()
             is JuicityBean -> toUri()
             is TrustTunnelBean -> toUri()
             is SnellBean -> toUri()
@@ -553,6 +561,7 @@ data class ProxyEntity(
         wgBean = null
         awgBean = null
         tuicBean = null
+        shadowQUICBean = null
         juicityBean = null
         snellBean = null
         masterDnsVPNBean = null
@@ -639,6 +648,11 @@ data class ProxyEntity(
             is TuicBean -> {
                 type = TYPE_TUIC
                 tuicBean = bean
+            }
+
+            is ShadowQUICBean -> {
+                type = TYPE_SHADOWQUIC
+                shadowQUICBean = bean
             }
 
             is JuicityBean -> {
@@ -743,6 +757,7 @@ data class ProxyEntity(
                 TYPE_WG -> WireGuardSettingsActivity::class.java
                 TYPE_AWG -> AmneziaWGSettingsActivity::class.java
                 TYPE_TUIC -> TuicSettingsActivity::class.java
+                TYPE_SHADOWQUIC -> ShadowQUICSettingsActivity::class.java
                 TYPE_JUICITY -> JuicitySettingsActivity::class.java
                 TYPE_SNELL -> SnellSettingsActivity::class.java
                 TYPE_MASTERDNSVPN -> MasterDnsVPNSettingsActivity::class.java
