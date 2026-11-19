@@ -20,12 +20,10 @@ fun parseShadowQUIC(url: String): ShadowQUICBean {
             ?: error("missing sni")
         alpn = link.queryParameter("alpn") ?: "h3"
         congestionControl = link.queryParameter("congestion_control") ?: "bbr"
-        udpOverStream = when (link.queryParameter("udp_mode")) {
-            "datagram" -> false
-            "stream" -> true
-            else -> true
-        }
-        zeroRTT = link.queryParameter("zero_rtt") != null
+        udpOverStream = link.queryParameter("udp_mode") == "stream"
+        zeroRTT = link.queryParameter("zero_rtt")?.let {
+            it.equals("true", ignoreCase = true) || it == "1"
+        } ?: false
     }
 }
 
