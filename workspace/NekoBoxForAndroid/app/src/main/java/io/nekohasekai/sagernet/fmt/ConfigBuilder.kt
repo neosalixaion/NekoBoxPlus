@@ -48,6 +48,8 @@ import io.nekohasekai.sagernet.fmt.trusttunnel.TrustTunnelBean
 import io.nekohasekai.sagernet.fmt.trusttunnel.buildSingBoxOutboundTrustTunnelBean
 import io.nekohasekai.sagernet.fmt.tuic.TuicBean
 import io.nekohasekai.sagernet.fmt.tuic.buildSingBoxOutboundTuicBean
+import io.nekohasekai.sagernet.fmt.shadowquic.ShadowQUICBean
+import io.nekohasekai.sagernet.fmt.shadowquic.buildSingBoxOutboundShadowQUICBean
 import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean
 import io.nekohasekai.sagernet.fmt.v2ray.buildSingBoxOutboundStandardV2RayBean
 import io.nekohasekai.sagernet.fmt.wireguard.AmneziaWGBean
@@ -798,6 +800,10 @@ fun buildConfig(
 
                                 is TuicBean -> {
                                     buildSingBoxOutboundTuicBean(bean)
+                                }
+
+                                is ShadowQUICBean -> {
+                                    buildSingBoxOutboundShadowQUICBean(bean)
                                 }
 
                                 is JuicityBean -> {
