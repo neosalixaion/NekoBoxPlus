@@ -35,6 +35,7 @@ import (
 	"github.com/sagernet/sing-box/protocol/shadowsocks"
 	"github.com/sagernet/sing-box/protocol/shadowsocksr"
 	"github.com/sagernet/sing-box/protocol/shadowtls"
+	"github.com/sagernet/sing-box/protocol/shadowquic"
 	snellprotocol "github.com/sagernet/sing-box/protocol/snell"
 	"github.com/sagernet/sing-box/protocol/socks"
 	"github.com/sagernet/sing-box/protocol/ssh"
@@ -93,6 +94,7 @@ func nekoboxAndroidOutboundRegistry() *outbound.Registry {
 	tor.RegisterOutbound(registry)
 	ssh.RegisterOutbound(registry)
 	shadowtls.RegisterOutbound(registry)
+	shadowquic.RegisterOutbound(registry)
 	vless.RegisterOutbound(registry)
 	mieru.RegisterOutbound(registry)
 	anytls.RegisterOutbound(registry)
