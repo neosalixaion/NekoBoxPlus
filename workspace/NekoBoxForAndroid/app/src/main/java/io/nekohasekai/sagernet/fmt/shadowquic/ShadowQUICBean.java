@@ -25,7 +25,7 @@ public class ShadowQUICBean extends AbstractBean {
         if (alpn == null) alpn = "h3";
         if (congestionControl == null) congestionControl = "bbr";
         if (zeroRTT == null) zeroRTT = false;
-        if (udpOverStream == null) udpOverStream = true;
+        if (udpOverStream == null) udpOverStream = false;
     }
 
     @Override
