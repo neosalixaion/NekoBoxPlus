@@ -24,7 +24,7 @@ fun parseShadowQUIC(url: String): ShadowQUICBean {
         udpOverStream = when (link.queryParameter("udp_mode")) {
             "datagram" -> false
             "stream" -> true
-            else -> false
+            else -> true
         }
         zeroRTT = link.queryParameter("zero_rtt")?.subscriptionBoolean() ?: false
     }
