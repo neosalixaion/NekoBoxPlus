@@ -76,6 +76,11 @@ public class ShadowQUICBean extends AbstractBean {
         }
     }
 
+    @Override
+    public boolean canTCPing() {
+        return false;
+    }
+
     @NonNull
     @Override
     public ShadowQUICBean clone() {
