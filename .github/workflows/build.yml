@@ -1,6 +1,9 @@
 name: Build NekoBox+
 
 on:
+  push:
+    branches:
+      - feature/shadowquic-android
   workflow_call:
     inputs:
       ref:
