@@ -143,6 +143,7 @@ import io.nekohasekai.sagernet.ui.profile.TrojanSettingsActivity
 import io.nekohasekai.sagernet.ui.profile.TailscaleSettingsActivity
 import io.nekohasekai.sagernet.ui.profile.TrustTunnelSettingsActivity
 import io.nekohasekai.sagernet.ui.profile.TuicSettingsActivity
+import io.nekohasekai.sagernet.ui.profile.ShadowQUICSettingsActivity
 import io.nekohasekai.sagernet.ui.profile.VMessSettingsActivity
 import io.nekohasekai.sagernet.ui.profile.AmneziaWGSettingsActivity
 import io.nekohasekai.sagernet.ui.profile.WireGuardSettingsActivity
@@ -1187,6 +1188,10 @@ class ConfigurationFragment @JvmOverloads constructor(
 
             R.id.action_new_tuic -> {
                 startActivity(Intent(requireActivity(), TuicSettingsActivity::class.java))
+            }
+
+            R.id.action_new_shadowquic -> {
+                startActivity(Intent(requireActivity(), ShadowQUICSettingsActivity::class.java))
             }
 
             R.id.action_new_juicity -> {
