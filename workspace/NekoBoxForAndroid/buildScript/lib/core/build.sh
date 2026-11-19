@@ -5,4 +5,5 @@ export CGO_ENABLED=1
 export GO386=softfloat
 
 cd libcore
+go mod tidy
 rel=1 bash ./build.sh || exit 1
