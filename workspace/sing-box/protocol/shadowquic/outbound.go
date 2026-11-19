@@ -1,0 +1,196 @@
+package shadowquic
+
+import (
+	"context"
+	"net"
+	"os"
+
+	shadowquic "github.com/exclavenetwork/sing-shadowquic"
+	"github.com/sagernet/sing-box/adapter"
+	"github.com/sagernet/sing-box/adapter/outbound"
+	"github.com/sagernet/sing-box/common/dialer"
+	"github.com/sagernet/sing-box/log"
+	"github.com/sagernet/sing-box/option"
+	"github.com/sagernet/sing/common"
+	E "github.com/sagernet/sing/common/exceptions"
+	"github.com/sagernet/sing/common/logger"
+	M "github.com/sagernet/sing/common/metadata"
+	N "github.com/sagernet/sing/common/network"
+	"github.com/sagernet/sing/common/uot"
+)
+
+const outboundType = "shadowquic"
+
+func RegisterOutbound(registry *outbound.Registry) {
+	outbound.Register[option.ShadowQUICOutboundOptions](registry, outboundType, NewOutbound)
+}
+
+var (
+	_ adapter.InterfaceUpdateListener = (*Outbound)(nil)
+	_ adapter.IdleConnectionKeeper    = (*Outbound)(nil)
+	_ adapter.OutboundWithMultiplex   = (*Outbound)(nil)
+)
+
+type Outbound struct {
+	outbound.Adapter
+	logger    logger.ContextLogger
+	client    *shadowquic.Client
+	udpStream bool
+}
+
+func NewOutbound(ctx context.Context, router adapter.Router, logger log.ContextLogger, tag string, options option.ShadowQUICOutboundOptions) (adapter.Outbound, error) {
+	if options.Username == "" {
+		return nil, E.New("missing username")
+	}
+	if options.Password == "" {
+		return nil, E.New("missing password")
+	}
+	if options.ServerName == "" {
+		return nil, E.New("missing server_name")
+	}
+
+	outboundDialer, err := dialer.New(ctx, options.DialerOptions, options.ServerIsDomain())
+	if err != nil {
+		return nil, err
+	}
+
+	client, err := shadowquic.NewClient(shadowquic.ClientOptions{
+		Context:           ctx,
+		Dialer:            outboundDialer,
+		ServerAddress:     options.ServerOptions.Build(),
+		Username:          options.Username,
+		Password:          options.Password,
+		ServerName:        options.ServerName,
+		NextProtos:        common.PtrValueOrDefault(options.ALPN),
+		CongestionControl: options.CongestionControl,
+		UDPOverStream:     options.UDPOverStream,
+		ZeroRTTHandshake:  options.ZeroRTTHandshake,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &Outbound{
+		Adapter:   outbound.NewAdapterWithDialerOptions(outboundType, tag, options.Network.Build(), options.DialerOptions),
+		logger:    logger,
+		client:    client,
+		udpStream: options.UDPOverStream,
+	}, nil
+}
+
+func (h *Outbound) DialContext(ctx context.Context, network string, destination M.Socksaddr) (net.Conn, error) {
+	switch N.NetworkName(network) {
+	case N.NetworkTCP:
+		h.logger.InfoContext(ctx, "outbound connection to ", destination)
+		return h.client.DialConn(ctx, destination)
+	case N.NetworkUDP:
+		if h.udpStream {
+			h.logger.InfoContext(ctx, "outbound stream packet connection to ", destination)
+			streamConn, err := h.client.DialConn(ctx, uot.RequestDestination(uot.Version))
+			if err != nil {
+				return nil, err
+			}
+			return uot.NewLazyConn(streamConn, uot.Request{
+				IsConnect:   true,
+				Destination: destination,
+			}), nil
+		}
+		packetConn, err := h.ListenPacket(ctx, destination)
+		if err != nil {
+			return nil, err
+		}
+		return &packetConnConn{PacketConn: packetConn, destination: destination}, nil
+	default:
+		return nil, E.New("unsupported network: ", network)
+	}
+}
+
+func (h *Outbound) ListenPacket(ctx context.Context, destination M.Socksaddr) (net.PacketConn, error) {
+	if h.udpStream {
+		h.logger.InfoContext(ctx, "outbound stream packet connection to ", destination)
+		streamConn, err := h.client.DialConn(ctx, uot.RequestDestination(uot.Version))
+		if err != nil {
+			return nil, err
+		}
+		return uot.NewLazyConn(streamConn, uot.Request{
+			IsConnect:   false,
+			Destination: destination,
+		}), nil
+	}
+	h.logger.InfoContext(ctx, "outbound packet connection to ", destination)
+	return h.client.ListenPacket(ctx)
+}
+
+func (h *Outbound) InterfaceUpdated(ctx context.Context) {
+	_ = h.client.Close()
+}
+
+func (h *Outbound) MultiplexEnabled() bool {
+	return true
+}
+
+func (h *Outbound) SetKeepIdleConnections(keep bool) {
+	h.client.SetKeepIdleConnections(keep)
+}
+
+func (h *Outbound) CloseIdleConnections() {
+	h.client.CloseIdleConnections()
+}
+
+func (h *Outbound) Start(stage adapter.StartStage, scope *adapter.Scope) error {
+	if stage != adapter.StartStateInitialize {
+		return nil
+	}
+	scope.Add(func() error {
+		_ = h.client.Close()
+		return nil
+	})
+	return nil
+}
+
+// packetConnConn binds an outbound UDP packet socket to the requested destination.
+type packetConnConn struct {
+	net.PacketConn
+	destination M.Socksaddr
+}
+
+func (c *packetConnConn) Read(p []byte) (int, error) {
+	buffer := make([]byte, len(p))
+	n, _, err := c.PacketConn.ReadFrom(buffer)
+	if err != nil {
+		return 0, err
+	}
+	return copy(p, buffer[:n]), nil
+}
+
+func (c *packetConnConn) Write(p []byte) (int, error) {
+	return c.PacketConn.WriteTo(p, c.destination)
+}
+
+func (c *packetConnConn) RemoteAddr() net.Addr {
+	return c.destination
+}
+
+func (c *packetConnConn) Close() error {
+	return c.PacketConn.Close()
+}
+
+func (c *packetConnConn) LocalAddr() net.Addr {
+	return c.PacketConn.LocalAddr()
+}
+
+func (c *packetConnConn) SetDeadline(t time.Time) error {
+	return c.PacketConn.SetDeadline(t)
+}
+
+func (c *packetConnConn) SetReadDeadline(t time.Time) error {
+	return c.PacketConn.SetReadDeadline(t)
+}
+
+func (c *packetConnConn) SetWriteDeadline(t time.Time) error {
+	return c.PacketConn.SetWriteDeadline(t)
+}
+
+var _ net.Conn = (*packetConnConn)(nil)
+
+var _ = os.ErrClosed
