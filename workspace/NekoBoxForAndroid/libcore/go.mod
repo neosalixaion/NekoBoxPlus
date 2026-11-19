@@ -5,6 +5,7 @@ go 1.27.3
 require (
 	github.com/Mahdi-zarei/speedtest-go v1.7.13-0.20260107171856-79c565dfd83a
 	github.com/exclavenetwork/sing-juicity v0.3.0-beta.2
+	github.com/exclavenetwork/sing-shadowquic v0.0.0-20261109112126-ace0c2eed158 // indirect
 	github.com/gofrs/uuid/v5 v5.5.1
 	github.com/golang/protobuf v1.5.4
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
@@ -102,8 +103,14 @@ require (
 	github.com/mdlayher/netlink v1.11.2 // indirect
 	github.com/mdlayher/socket v0.6.0 // indirect
 	github.com/metacubex/chacha v0.1.5 // indirect
+	github.com/metacubex/mlkem v0.1.0 // indirect
+	github.com/metacubex/jls-tls v0.0.0-20260723084315-67adc0e2f796 // indirect
+	github.com/metacubex/jls-quic-go v0.0.0-20260727080412-732f2fc9a34d // indirect
+	github.com/metacubex/hpke v0.1.0 // indirect
+	github.com/metacubex/hkdf v0.1.0 // indirect
+	github.com/metacubex/cpu v0.1.0 // indirect
 	github.com/metacubex/mihomo v1.19.28 // indirect
-	github.com/metacubex/randv2 v0.2.0 // indirect
+	github.com/metacubex/randv2 v0.2.1-0.20260726125100-81aa96a9b1a5 // indirect
 	github.com/metacubex/sing v0.5.7 // indirect
 	github.com/mholt/acmez/v3 v3.1.6 // indirect
 	github.com/mitchellh/go-ps v1.0.0 // indirect

@@ -94,6 +94,8 @@ github.com/enfein/mieru/v3 v3.36.0/go.mod h1:zJBUCsi5rxyvHM8fjFf+GLaEl4OEjjBXr1s
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1mIlRU8Am5FuJP05cCM98=
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
+github.com/exclavenetwork/sing-shadowquic v0.0.0-20261109112126-ace0c2eed158 h1:pTF9ttu661DeYxAzbwoD71lGcwFkcB3MZoegDGXdtjQ=
+github.com/exclavenetwork/sing-shadowquic v0.0.0-20261109112126-ace0c2eed158/go.mod h1:dnogioLE7ZFypHbYHMFo2NMvzUniEdhht0qKlN0IlIM=
 github.com/florianl/go-nfqueue/v2 v2.1.0 h1:Fywt30TY/evxyDySpXjxQ1jsRW7nQbLpOhELqpr4068=
 github.com/florianl/go-nfqueue/v2 v2.1.0/go.mod h1:8PKUM5rYoVFO5IZV1bifx4/b0jHAglKkHXr9PRwzi4Y=
 github.com/fsnotify/fsnotify v1.9.0 h1:2Ml+OJNzbYCTzsxtv8vKSFD9PbJjmhYF14k/jKC7S9k=
@@ -228,6 +230,8 @@ github.com/metacubex/chacha v0.1.5 h1:fKWMb/5c7ZrY8Uoqi79PPFxl+qwR7X/q0OrsAubyX2
 github.com/metacubex/chacha v0.1.5/go.mod h1:Djn9bPZxLTXbJFSeyo0/qzEzQI+gUSSzttuzZM75GH8=
 github.com/metacubex/cpu v0.1.0 h1:8PeTdV9j6UKbN1K5Jvtbi/Jock7dknvzyYuLb8Conmk=
 github.com/metacubex/cpu v0.1.0/go.mod h1:09VEt4dSRLR+bOA8l4w4NDuzGZ8n5dkMv7e8axgEeTU=
+github.com/metacubex/cpu v0.1.2 h1:xJHPWLkGilSWm6vEvzz8Loe+UusODRkVnuXz96TWAZo=
+github.com/metacubex/cpu v0.1.2/go.mod h1:09VEt4dSRLR+bOA8l4w4NDuzGZ8n5dkMv7e8axgEeTU=
 github.com/metacubex/hkdf v0.1.0 h1:fPA6VzXK8cU1foc/TOmGCDmSa7pZbxlnqhl3RNsthaA=
 github.com/metacubex/hkdf v0.1.0/go.mod h1:3seEfds3smgTAXqUGn+tgEJH3uXdsUjOiduG/2EtvZ4=
 github.com/metacubex/hpke v0.1.0 h1:gu2jUNhraehWi0P/z5HX2md3d7L1FhPQE6/Q0E9r9xQ=
