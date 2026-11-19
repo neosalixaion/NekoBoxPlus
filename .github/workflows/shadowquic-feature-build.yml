@@ -50,10 +50,8 @@ jobs:
           mkdir -p "$GITHUB_WORKSPACE/workspace/sing-box/common/adblock/adblockrust/resources/files"
           touch "$GITHUB_WORKSPACE/workspace/sing-box/common/adblock/adblockrust/resources/files/placeholder.txt"
           bash buildScript/lib/core.docker.sh
-          cd "$GITHUB_WORKSPACE/workspace/NekoBoxForAndroid/libcore"
-          go mod tidy
           cd "$GITHUB_WORKSPACE/workspace/sing-box"
-          go test -tags=with_quic ./include
+          go test -mod=mod -tags=with_quic ./include
 
       - name: Build isolated debug APK
         run: |
