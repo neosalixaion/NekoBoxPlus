@@ -3,7 +3,6 @@ package shadowquic
 import (
 	"context"
 	"net"
-	"os"
 
 	shadowquic "github.com/exclavenetwork/sing-shadowquic"
 	"github.com/sagernet/sing-box/adapter"
@@ -12,6 +11,7 @@ import (
 	"github.com/sagernet/sing-box/log"
 	"github.com/sagernet/sing-box/option"
 	"github.com/sagernet/sing/common"
+	"github.com/sagernet/sing/common/bufio"
 	E "github.com/sagernet/sing/common/exceptions"
 	"github.com/sagernet/sing/common/logger"
 	M "github.com/sagernet/sing/common/metadata"
@@ -61,7 +61,7 @@ func NewOutbound(ctx context.Context, router adapter.Router, logger log.ContextL
 		Username:          options.Username,
 		Password:          options.Password,
 		ServerName:        options.ServerName,
-		NextProtos:        common.PtrValueOrDefault(options.ALPN),
+		NextProtos:        options.ALPN,
 		CongestionControl: options.CongestionControl,
 		UDPOverStream:     options.UDPOverStream,
 		ZeroRTTHandshake:  options.ZeroRTTHandshake,
@@ -99,7 +99,7 @@ func (h *Outbound) DialContext(ctx context.Context, network string, destination 
 		if err != nil {
 			return nil, err
 		}
-		return &packetConnConn{PacketConn: packetConn, destination: destination}, nil
+		return bufio.NewBindPacketConn(packetConn, destination), nil
 	default:
 		return nil, E.New("unsupported network: ", network)
 	}
@@ -142,55 +142,7 @@ func (h *Outbound) Start(stage adapter.StartStage, scope *adapter.Scope) error {
 		return nil
 	}
 	scope.Add(func() error {
-		_ = h.client.Close()
-		return nil
+		return h.client.Close()
 	})
 	return nil
 }
-
-// packetConnConn binds an outbound UDP packet socket to the requested destination.
-type packetConnConn struct {
-	net.PacketConn
-	destination M.Socksaddr
-}
-
-func (c *packetConnConn) Read(p []byte) (int, error) {
-	buffer := make([]byte, len(p))
-	n, _, err := c.PacketConn.ReadFrom(buffer)
-	if err != nil {
-		return 0, err
-	}
-	return copy(p, buffer[:n]), nil
-}
-
-func (c *packetConnConn) Write(p []byte) (int, error) {
-	return c.PacketConn.WriteTo(p, c.destination)
-}
-
-func (c *packetConnConn) RemoteAddr() net.Addr {
-	return c.destination
-}
-
-func (c *packetConnConn) Close() error {
-	return c.PacketConn.Close()
-}
-
-func (c *packetConnConn) LocalAddr() net.Addr {
-	return c.PacketConn.LocalAddr()
-}
-
-func (c *packetConnConn) SetDeadline(t time.Time) error {
-	return c.PacketConn.SetDeadline(t)
-}
-
-func (c *packetConnConn) SetReadDeadline(t time.Time) error {
-	return c.PacketConn.SetReadDeadline(t)
-}
-
-func (c *packetConnConn) SetWriteDeadline(t time.Time) error {
-	return c.PacketConn.SetWriteDeadline(t)
-}
-
-var _ net.Conn = (*packetConnConn)(nil)
-
-var _ = os.ErrClosed
