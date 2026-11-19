@@ -3,6 +3,7 @@ package io.nekohasekai.sagernet.fmt.shadowquic
 import io.nekohasekai.sagernet.ktx.linkBuilder
 import io.nekohasekai.sagernet.ktx.toLink
 import moe.matsuri.nb4a.SingBoxOptions
+import io.nekohasekai.sagernet.database.DataStore
 import moe.matsuri.nb4a.utils.listByLineOrComma
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import moe.matsuri.nb4a.utils.JavaUtil.gson
@@ -43,7 +44,7 @@ fun ShadowQUICBean.toUri(): String {
     return builder.toLink("sq")
 }
 
-fun buildSingBoxOutboundShadowQUICBean(bean: ShadowQUICBean): SingBoxOptions.SingBoxOption {
+fun buildSingBoxOutboundShadowQUICBean(bean: ShadowQUICBean): SingBoxOptions.CustomSingBoxOption {
     require(bean.username.isNotBlank()) { "ShadowQUIC username is required" }
     require(bean.password.isNotBlank()) { "ShadowQUIC password is required" }
     require(bean.sni.isNotBlank()) { "ShadowQUIC SNI is required" }
@@ -60,5 +61,6 @@ fun buildSingBoxOutboundShadowQUICBean(bean: ShadowQUICBean): SingBoxOptions.Sin
     )
     val protocols = bean.alpn.listByLineOrComma()
     if (protocols.isNotEmpty()) config["alpn"] = protocols
+    config["domain_strategy"] = "prefer_ipv4"
     return SingBoxOptions.CustomSingBoxOption(gson.toJson(config))
 }
