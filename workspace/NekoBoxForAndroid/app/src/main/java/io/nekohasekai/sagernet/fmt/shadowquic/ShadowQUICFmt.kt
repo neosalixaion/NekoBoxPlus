@@ -9,7 +9,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import moe.matsuri.nb4a.utils.JavaUtil.gson
 
 fun parseShadowQUIC(url: String): ShadowQUICBean {
-    val link = url.replaceFirst("sq://", "https://").toHttpUrlOrNull()
+    val link = url.replaceFirst(Regex("^sq://", RegexOption.IGNORE_CASE), "https://").toHttpUrlOrNull()
         ?: error("invalid ShadowQUIC link")
     return ShadowQUICBean().apply {
         name = link.fragment.orEmpty()
