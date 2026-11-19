@@ -14,7 +14,6 @@ import (
 	M "github.com/sagernet/sing/common/metadata"
 	N "github.com/sagernet/sing/common/network"
 	E "github.com/sagernet/sing/common/exceptions"
-	"github.com/sagernet/sing/common/uot"
 )
 
 const outboundType = "shadowquic"
@@ -31,8 +30,7 @@ var (
 
 type Outbound struct {
 	outbound.Adapter
-	client    *shadowquic.Client
-	udpStream bool
+	client *shadowquic.Client
 }
 
 func NewOutbound(ctx context.Context, router adapter.Router, logger log.ContextLogger, tag string, options option.ShadowQUICOutboundOptions) (adapter.Outbound, error) {
@@ -60,8 +58,7 @@ func NewOutbound(ctx context.Context, router adapter.Router, logger log.ContextL
 	}
 	return &Outbound{
 		Adapter:   outbound.NewAdapterWithDialerOptions(outboundType, tag, options.Network.Build(), options.DialerOptions),
-		client:    client,
-		udpStream: options.UDPOverStream,
+		client: client,
 	}, nil
 }
 
@@ -70,17 +67,7 @@ func (h *Outbound) DialContext(ctx context.Context, network string, destination 
 	case N.NetworkTCP:
 		return h.client.DialConn(ctx, destination)
 	case N.NetworkUDP:
-		if h.udpStream {
-			streamConn, err := h.client.DialConn(ctx, uot.RequestDestination(uot.Version))
-			if err != nil {
-				return nil, err
-			}
-			return uot.NewLazyConn(streamConn, uot.Request{
-				IsConnect: true,
-				Destination: destination,
-			}), nil
-		}
-		packetConn, err := h.ListenPacket(ctx, destination)
+		packetConn, err := h.client.ListenPacket(ctx)
 		if err != nil {
 			return nil, err
 		}
@@ -91,16 +78,6 @@ func (h *Outbound) DialContext(ctx context.Context, network string, destination 
 }
 
 func (h *Outbound) ListenPacket(ctx context.Context, destination M.Socksaddr) (net.PacketConn, error) {
-	if h.udpStream {
-		streamConn, err := h.client.DialConn(ctx, uot.RequestDestination(uot.Version))
-		if err != nil {
-			return nil, err
-		}
-		return uot.NewLazyConn(streamConn, uot.Request{
-			IsConnect: false,
-			Destination: destination,
-		}), nil
-	}
 	return h.client.ListenPacket(ctx)
 }
 
