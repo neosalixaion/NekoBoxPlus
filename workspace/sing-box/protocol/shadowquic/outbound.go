@@ -3,6 +3,7 @@ package shadowquic
 import (
 	"context"
 	"net"
+	"os"
 
 	shadowquic "github.com/exclavenetwork/sing-shadowquic"
 	"github.com/sagernet/sing-box/adapter"
@@ -11,9 +12,10 @@ import (
 	"github.com/sagernet/sing-box/log"
 	"github.com/sagernet/sing-box/option"
 	"github.com/sagernet/sing/common/bufio"
+	E "github.com/sagernet/sing/common/exceptions"
+	"github.com/sagernet/sing/common/logger"
 	M "github.com/sagernet/sing/common/metadata"
 	N "github.com/sagernet/sing/common/network"
-	E "github.com/sagernet/sing/common/exceptions"
 )
 
 const outboundType = "shadowquic"
@@ -23,6 +25,7 @@ func RegisterOutbound(registry *outbound.Registry) {
 }
 
 var (
+	_ adapter.Outbound                = (*Outbound)(nil)
 	_ adapter.InterfaceUpdateListener = (*Outbound)(nil)
 	_ adapter.IdleConnectionKeeper    = (*Outbound)(nil)
 	_ adapter.OutboundWithMultiplex   = (*Outbound)(nil)
@@ -30,17 +33,26 @@ var (
 
 type Outbound struct {
 	outbound.Adapter
+	logger logger.ContextLogger
 	client *shadowquic.Client
 }
 
 func NewOutbound(ctx context.Context, router adapter.Router, logger log.ContextLogger, tag string, options option.ShadowQUICOutboundOptions) (adapter.Outbound, error) {
-	if options.Username == "" || options.Password == "" || options.ServerName == "" {
-		return nil, E.New("shadowquic: username, password and server_name are required")
+	if options.Username == "" {
+		return nil, E.New("missing username")
 	}
+	if options.Password == "" {
+		return nil, E.New("missing password")
+	}
+	if options.ServerName == "" {
+		return nil, E.New("missing server_name")
+	}
+
 	outboundDialer, err := dialer.New(ctx, options.DialerOptions, options.ServerIsDomain())
 	if err != nil {
 		return nil, err
 	}
+
 	client, err := shadowquic.NewClient(shadowquic.ClientOptions{
 		Context:           ctx,
 		Dialer:            outboundDialer,
@@ -56,18 +68,21 @@ func NewOutbound(ctx context.Context, router adapter.Router, logger log.ContextL
 	if err != nil {
 		return nil, err
 	}
+
 	return &Outbound{
-		Adapter:   outbound.NewAdapterWithDialerOptions(outboundType, tag, options.Network.Build(), options.DialerOptions),
-		client: client,
+		Adapter: outbound.NewAdapterWithDialerOptions(outboundType, tag, options.Network.Build(), options.DialerOptions),
+		logger:  logger,
+		client:  client,
 	}, nil
 }
 
 func (h *Outbound) DialContext(ctx context.Context, network string, destination M.Socksaddr) (net.Conn, error) {
 	switch N.NetworkName(network) {
 	case N.NetworkTCP:
+		h.logger.InfoContext(ctx, "outbound connection to ", destination)
 		return h.client.DialConn(ctx, destination)
 	case N.NetworkUDP:
-		packetConn, err := h.client.ListenPacket(ctx)
+		packetConn, err := h.ListenPacket(ctx, destination)
 		if err != nil {
 			return nil, err
 		}
@@ -78,6 +93,7 @@ func (h *Outbound) DialContext(ctx context.Context, network string, destination 
 }
 
 func (h *Outbound) ListenPacket(ctx context.Context, destination M.Socksaddr) (net.PacketConn, error) {
+	h.logger.InfoContext(ctx, "outbound packet connection to ", destination)
 	return h.client.ListenPacket(ctx)
 }
 
