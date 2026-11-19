@@ -17,15 +17,15 @@ public class ShadowQUICBean extends AbstractBean {
 
     @Override
     public void initializeDefaultValues() {
+        if (serverPort == null) serverPort = 443;
         super.initializeDefaultValues();
-        if (serverPort == null || serverPort == 1080) serverPort = 443;
         if (username == null) username = "";
         if (password == null) password = "";
         if (sni == null) sni = "";
         if (alpn == null) alpn = "h3";
         if (congestionControl == null) congestionControl = "bbr";
         if (zeroRTT == null) zeroRTT = false;
-        if (udpOverStream == null) udpOverStream = false;
+        if (udpOverStream == null) udpOverStream = true;
     }
 
     @Override
